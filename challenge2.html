@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+            margin-top: 90px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            border: 9px solid #0804ff;
+            display: center;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cell:hover {
+            background-color: #ed00f1;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>"Tic-Tac-Toe"</h1>
+    <div class="board" id="board"></div>
+    <div class="message" id="message">Player X's turn</div>
+
+    <script>
+        const board = document.getElementById("board");
+        const message = document.getElementById("message");
+        let currentPlayer = "X";
+        let boardState = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+
+        function handleCellClick(index) {
+            if (gameActive && boardState[index] === "") {
+                boardState[index] = currentPlayer;
+                renderBoard();
+                if (checkWin(currentPlayer)) {
+                    gameActive = false;
+                    message.textContent = `Player ${currentPlayer} wins!`;
+                } else if (!boardState.includes("")) {
+                    gameActive = false;
+                    message.textContent = "It's a draw!";
+                } else {
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+                    message.textContent = `Player ${currentPlayer}'s turn`;
+                }
+            }
+        }
+
+        function checkWin(player) {
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            return winningCombinations.some(combination => {
+                return combination.every(index => boardState[index] === player);
+            });
+        }
+
+        function renderBoard() {
+            board.innerHTML = "";
+            boardState.forEach((cell, index) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("cell");
+                cellElement.textContent = cell;
+                cellElement.addEventListener("click", () => handleCellClick(index));
+                board.appendChild(cellElement);
+            });
+        }
+
+        renderBoard();
+    </script>
+</body>
+</html>
